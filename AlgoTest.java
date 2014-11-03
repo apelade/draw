@@ -7,35 +7,135 @@ import java.util.Arrays;
 import java.util.Set;
 import org.junit.Test;
 
+/**
+ * @author apelade
+ * test line drawing for evenness
+ */
 public class AlgoTest {
-    int scalex = 10;
-    int scaley = 10;
+	
+	/**
+	 * Scale of horizontal and vertical snap grid
+	 */
+    static final int scalex = 10;
+    static final int scaley = 10;
 
     @Test
     public void test() {
-        System.out.println("" + testGetSpots());
+       testGetSpots();
     }
 
-    public Set<Point> testGetSpots() {
-
-        Object[] inputs = { new Point(25, 455), new Point(60, 290), scalex, scaley };
-        System.out.println("Inputs: " + Arrays.toString(inputs));
+    // There must be something to do with junit here
+    public static Set<Point> getPointsForArray(Point start, Point stop){
         Set<Point> pts = Algo.getSpots(
-                (Point) inputs[0],
-                (Point) inputs[1],
-                (Integer) inputs[2],
-                (Integer) inputs[3],
+        		start,
+        		stop,
+        		scalex,
+        		scaley,
                 true);
-       // System.out.println("Outputs: " + Arrays.toString(pts.toArray()));
-        assertTrue(testGetSpotsOutputDivisibleByTen(pts));
-        assertEquals(
-          Arrays.toString(pts.toArray()),
-          "[java.awt.Point[x=20,y=450], java.awt.Point[x=20,y=440], java.awt.Point[x=30,y=430], java.awt.Point[x=30,y=420], java.awt.Point[x=30,y=410], java.awt.Point[x=30,y=400], java.awt.Point[x=40,y=390], java.awt.Point[x=40,y=380], java.awt.Point[x=40,y=370], java.awt.Point[x=40,y=360], java.awt.Point[x=50,y=350], java.awt.Point[x=50,y=340], java.awt.Point[x=50,y=330], java.awt.Point[x=50,y=320], java.awt.Point[x=60,y=310], java.awt.Point[x=60,y=300], java.awt.Point[x=60,y=290]]"
-        );
+//        System.out.println("Outputs: " + Arrays.toString(pts.toArray()));
+        assertTrue(testGetSpotsOutputDivisibleByScale(pts));
         return pts;
     }
+    /**
+     * Show that the layout of generated spots is correct
+     */
+    public void testGetSpots() {
 
-    public boolean testGetSpotsOutputDivisibleByTen(Set<Point> points) {
+        /**
+         *          #
+         *        ##
+         *      ##
+         *    ##
+         *  ##
+         * #
+         * 
+         */
+        Set<Point> pts = getPointsForArray(new Point(10, 100), new Point(100, 50));
+        assertEquals(
+        	Arrays.toString(pts.toArray()),
+            "[java.awt.Point[x=10,y=100], java.awt.Point[x=20,y=90], java.awt.Point[x=30,y=90], java.awt.Point[x=40,y=80], java.awt.Point[x=50,y=80], java.awt.Point[x=60,y=70], java.awt.Point[x=70,y=70], java.awt.Point[x=80,y=60], java.awt.Point[x=90,y=60], java.awt.Point[x=100,y=50]]"
+        );
+        
+        /**
+         * 
+         * ### 
+         *    ####
+         * 
+         */
+        pts = getPointsForArray(new Point(10, 10), new Point(70, 20));
+        assertEquals(
+        	Arrays.toString(pts.toArray()),
+            "[java.awt.Point[x=10,y=10], java.awt.Point[x=20,y=10], java.awt.Point[x=30,y=10], java.awt.Point[x=40,y=20], java.awt.Point[x=50,y=20], java.awt.Point[x=60,y=20], java.awt.Point[x=70,y=20]]"
+        );
+        
+        /**
+         * 
+         * ####  
+         *     ####
+         * 
+         */
+        pts = getPointsForArray(new Point(10, 10), new Point(80, 20));
+        assertEquals(
+        	Arrays.toString(pts.toArray()),
+            "[java.awt.Point[x=10,y=10], java.awt.Point[x=20,y=10], java.awt.Point[x=30,y=10], java.awt.Point[x=40,y=10], java.awt.Point[x=50,y=20], java.awt.Point[x=60,y=20], java.awt.Point[x=70,y=20], java.awt.Point[x=80,y=20]]"
+        );
+        
+        /**
+         * 
+         * ####  
+         *     #####
+         * 
+         */
+        pts = getPointsForArray(new Point(10, 10), new Point(90, 20));
+        assertEquals(
+        	Arrays.toString(pts.toArray()),
+            "[java.awt.Point[x=10,y=10], java.awt.Point[x=20,y=10], java.awt.Point[x=30,y=10], java.awt.Point[x=40,y=10], java.awt.Point[x=50,y=20], java.awt.Point[x=60,y=20], java.awt.Point[x=70,y=20], java.awt.Point[x=80,y=20], java.awt.Point[x=90,y=20]]"
+        );
+        
+        /**
+         * @TODO: this should be 3 x 3 ideally
+         * 
+         * ##  
+         *   ####
+         *       ###
+         * 
+         */
+        pts = getPointsForArray(new Point(10, 10), new Point(90, 30));
+        assertEquals(
+        	Arrays.toString(pts.toArray()),
+            "[java.awt.Point[x=10,y=10], java.awt.Point[x=20,y=10], java.awt.Point[x=30,y=20], java.awt.Point[x=40,y=20], java.awt.Point[x=50,y=20], java.awt.Point[x=60,y=20], java.awt.Point[x=70,y=30], java.awt.Point[x=80,y=30], java.awt.Point[x=90,y=30]]"
+        );
+        
+        /**
+         * 
+         * ###  
+         *    ####
+         *        ###
+         * 
+         */
+        pts = getPointsForArray(new Point(0, 10), new Point(90, 30));
+        assertEquals(
+        	Arrays.toString(pts.toArray()),
+            "[java.awt.Point[x=0,y=10], java.awt.Point[x=10,y=10], java.awt.Point[x=20,y=10], java.awt.Point[x=30,y=20], java.awt.Point[x=40,y=20], java.awt.Point[x=50,y=20], java.awt.Point[x=60,y=20], java.awt.Point[x=70,y=30], java.awt.Point[x=80,y=30], java.awt.Point[x=90,y=30]]"
+        );
+        
+    	/**
+    	*                   ##
+    	*               ####
+    	*           ####
+    	*       ####  
+    	*   ####   
+    	* ##
+    	*/                
+        pts = getPointsForArray(new Point(20, 60), new Point(220, 10));
+        assertEquals(
+        	Arrays.toString(pts.toArray()),
+            "[java.awt.Point[x=20,y=60], java.awt.Point[x=30,y=60], java.awt.Point[x=40,y=60], java.awt.Point[x=50,y=50], java.awt.Point[x=60,y=50], java.awt.Point[x=70,y=50], java.awt.Point[x=80,y=50], java.awt.Point[x=90,y=40], java.awt.Point[x=100,y=40], java.awt.Point[x=110,y=40], java.awt.Point[x=120,y=40], java.awt.Point[x=130,y=30], java.awt.Point[x=140,y=30], java.awt.Point[x=150,y=30], java.awt.Point[x=160,y=30], java.awt.Point[x=170,y=20], java.awt.Point[x=180,y=20], java.awt.Point[x=190,y=20], java.awt.Point[x=200,y=20], java.awt.Point[x=210,y=10], java.awt.Point[x=220,y=10]]"
+        );
+    }
+    
+
+    public static boolean testGetSpotsOutputDivisibleByScale(Set<Point> points) {
         for (Point p : points) {
             if (p.x % scalex != 0 || p.y % scaley != 0) {
                 return false;
